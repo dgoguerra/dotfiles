@@ -1,0 +1,71 @@
+[user]
+    name = Diego Guerra
+    email = dgoguerra.or@gmail.com
+
+[alias]
+    # Log graph
+    graph = log --graph --decorate
+    # Compress the project's working tree
+    tar = !sh -c 'git archive --format=tar HEAD | gzip > project_`date +"%d%m%Y-%H%M"`.tar.gz'
+    # Diff with extra info
+    d = !"git diff-index --quiet HEAD -- || clear; git diff --patch-with-stat"
+    # Local side of a diff
+    my-diff = "!s() { git diff `git merge-base HEAD $1`; }; s"
+    # Remote side of a diff
+    his-diff = "!s() { git diff `git merge-base HEAD $1` $1; }; s"
+    # Show commits in one branch but not in the other
+    my-commits = "!s() { git log --left-right --graph --cherry-pick --oneline $1...$2; }; s"
+    # Interactive rebase of the last NUM commits.
+    # Ex: git reb 4
+    reb = "!r() { git rebase -i HEAD~$1; }; r"
+    # Merge fast-forward shortcut
+    ff = merge --ff-only
+    # Merge forcing a merge commit even if it can fast-forward
+    noff = merge --no-ff
+    # git status shortcut
+    s = status
+    # Bring branch up to date by fetching from remote and rebasing into it,
+    # autostashing local changes
+    up = pull --rebase=preserve --autostash
+    # Current branch name
+    curr-branch = !git symbolic-ref --short HEAD
+    # Push to the current branch
+    pushb = !git push origin `git curr-branch`
+    # Setup branch tracking to origin
+    set-upstream = !git branch --set-upstream-to=origin/`git curr-branch`
+    # Get hash of the current commit
+    hash = rev-parse --verify HEAD
+    # Undo the previous local commit, keeping changes in the index
+    undo-commit = reset --soft HEAD^
+    # Run a perl replace on all the files in the index.
+    # Ex: git perl 's/old/new/g'
+    perl = "!s() { git ls-files -z | xargs -0 perl -p -i -e \"$1\"; }; s"
+    # Verbose colored grep, grouping matches in the same file and without wrapping long lines
+    lgrep = "!s() { git grep --color=always --break --heading --line-number \"$@\" | less --chop-long-lines --RAW-CONTROL-CHARS; }; s"
+    # First project's empty commit
+    first-commit = commit -m 'Initial empty commit' --allow-empty
+    # Purge file from a repository's history.
+    # See: https://help.github.com/articles/removing-sensitive-data-from-a-repository/
+    purge = "!s() { git filter-branch --force --index-filter \"git rm --cached --ignore-unmatch $1\" --prune-empty --tag-name-filter cat -- --all; }; s"
+
+[color]
+    ui = true
+
+[core]
+    excludesfile = ~/.gitignore_global
+
+[commit]
+    verbose = true
+
+[diff]
+    tool = p4merge
+
+[merge]
+    tool = p4merge
+
+[mergetool "p4merge"]
+    cmd = /Applications/p4merge.app/Contents/Resources/launchp4merge "\"$PWD/$BASE\"" "\"$PWD/$LOCAL\"" "\"$PWD/$REMOTE\"" "\"$PWD/$MERGED\""
+    trustExitCode = false
+
+[difftool "p4merge"]
+    cmd = /Applications/p4merge.app/Contents/Resources/launchp4merge "\"$LOCAL\"" "\"$REMOTE\""
