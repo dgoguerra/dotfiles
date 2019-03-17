@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# Fixup/amend a commit. This is equivalent to `git commit --amend`
+# to modify the last commit, but for any given commit.
+#
+# Requires fzf (https://github.com/junegunn/fzf) to be installed:
+#
+#   brew install fzf
+#
+
+HASH="$1"
+
+if [[ "$HASH" == "" ]]; then
+    # No arguments, select target commit with fzf
+    LINE=`git log --pretty=oneline | head -n 100 | fzf` || exit 1
+    HASH=`echo "$LINE" | awk '{ print $1 }'`
+fi
+
+# Create spacial fixup commit
+git commit --fixup="$HASH" --allow-empty
+
+# Run autosquash rebase.
+# GIT_SEQUENCE_EDITOR=: avoids opening the rebase sequence.
+GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash --autostash "$HASH"~1;

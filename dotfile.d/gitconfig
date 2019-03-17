@@ -13,6 +13,7 @@
     g = log --graph --decorate
     ff = merge --ff-only
     noff = merge --no-ff
+    amend = commit --amend
     pushb = !git push origin `git my-branch`
     set-upstream = !git branch --set-upstream-to=origin/`git my-branch`
 
@@ -24,6 +25,11 @@
     # Ex: git reb
     # Ex: git reb 4
     reb = "!s() { \"${DOTFILES_DIR}\"/scripts/git-rebase-wrapper.sh \"$@\"; }; s"
+
+    # Fixup/amend any given commit.
+    # Ex: git fixup
+    # Ex: git fixup HASH
+    fixup = "!s() { \"${DOTFILES_DIR}\"/scripts/git-fixup.sh \"$@\"; }; s"
 
     # Find and open file using fzf.
     # See: https://github.com/junegunn/fzf

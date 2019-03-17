@@ -9,7 +9,8 @@
 #
 
 if [[ "$#" == "0" ]]; then
-    BRANCH=`git recent-branches | fzf` && git checkout "$BRANCH"
+    BRANCH=`git recent-branches | fzf` || exit 1
+    git checkout "$BRANCH"
 else
     git checkout "$@"
 fi

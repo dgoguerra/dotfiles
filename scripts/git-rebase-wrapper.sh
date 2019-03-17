@@ -15,13 +15,15 @@
 #   brew install fzf
 #
 
-# No arguments, select starting commit with fzf.
 if [[ "$#" == "0" ]]; then
-    HASH=`git log --pretty=oneline | head -n 100 | fzf` && git rebase -i `echo ${HASH} | awk '{ print $1 }'`^
-# Single commit and its an integer, rebase starting NUM commits ago
+    # No arguments, select starting commit with fzf
+    LINE=`git log --pretty=oneline | head -n 100 | fzf` || exit 1
+    HASH=`echo "$LINE" | awk '{ print $1 }'`
+    git rebase -i "$HASH"^
 elif [[ "$#" == 1 ]] && [[ "$1" =~ ^[0-9]+$ ]] ; then
+    # Single commit and its an integer, rebase starting NUM commits ago
     git rebase -i HEAD~$1
-# Fallback to git rebase
 else
+    # Fallback to git rebase
     git rebase "$@"
 fi
