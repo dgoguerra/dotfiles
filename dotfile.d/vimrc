@@ -1,0 +1,31 @@
+syntax on
+
+" Show line number
+set number
+
+function CustomHighlight()
+    " line number highlighting
+    hi LineNr cterm=bold ctermfg=Grey ctermbg=8
+
+    " git commit highlighting
+    hi gitcommitComment cterm=NONE ctermfg=NONE
+    hi gitcommitOnBranch cterm=NONE ctermfg=NONE
+    hi gitcommitBranch cterm=NONE ctermfg=NONE
+    hi gitcommitHeader cterm=NONE ctermfg=NONE
+
+    " diff highlighting
+    hi diffAdded cterm=bold ctermfg=DarkGreen
+    hi diffRemoved cterm=bold ctermfg=DarkRed
+    hi diffLine cterm=bold ctermfg=5 " Purple
+    hi diffFile cterm=bold ctermfg=Yellow
+    hi diffSubname cterm=NONE ctermfg=NONE
+    hi link diffIndexLine diffFile
+endfunction
+
+" Run highlighting setup directly, for files without
+" a recognized filetype.
+call CustomHighlight()
+
+" Run again custom highlighting on Syntax event, to override
+" any settings on files with recognized filetype.
+autocmd Syntax * call CustomHighlight()
