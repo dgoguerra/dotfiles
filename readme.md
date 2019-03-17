@@ -9,5 +9,5 @@ Clone the repo and run `./install.sh`.
 ### Dependencies
 
 ```
-brew install git fzf bash-completion
+brew install git fzf blueutil bash-completion the_silver_searcher
 ```
