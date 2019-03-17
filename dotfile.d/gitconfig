@@ -86,6 +86,9 @@
 [commit]
     verbose = true
 
+[grep]
+  linenumber = true
+
 [diff]
     tool = p4merge
 
