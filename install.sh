@@ -15,7 +15,8 @@ install_profile_loader() {
     else
         echo "" >> "$profile"
         echo "# Install dgoguerra/dotfiles profile loader" >> "$profile"
-        echo "[[ -s \"$BASEDIR/loader.sh\" ]] && . \"$BASEDIR/loader.sh\"" >> "$profile"
+        echo "export DOTFILES_DIR=$BASEDIR" >> "$profile"
+        echo "[[ -s \"\$DOTFILES_DIR/loader.sh\" ]] && . \"\$DOTFILES_DIR/loader.sh\"" >> "$profile"
 
         echo "Installed profile loader in '$profile'."
     fi

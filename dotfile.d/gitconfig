@@ -16,9 +16,25 @@
     pushb = !git push origin `git my-branch`
     set-upstream = !git branch --set-upstream-to=origin/`git my-branch`
 
+    # 'git checkout' wrapper to select branch if no args were provided.
+    c = "!s() { \"${DOTFILES_DIR}\"/scripts/git-checkout-wrapper.sh \"$@\"; }; s"
+
+    # 'git rebase' wrapper to select starting commit of interactive rebase
+    # it none was provided.
+    # Ex: git reb
+    # Ex: git reb 4
+    reb = "!s() { \"${DOTFILES_DIR}\"/scripts/git-rebase-wrapper.sh \"$@\"; }; s"
+
+    # Find and open file using fzf.
+    # See: https://github.com/junegunn/fzf
+    vim = !FILE=`git ls-files | fzf` && vim "$FILE"
+
     # Bring branch up to date by fetching from remote and rebasing into it,
     # autostashing local changes
     up = pull --rebase=preserve --autostash
+
+    # List recent branches
+    recent-branches = !git for-each-ref --sort=-committerdate --format='%(refname:short)' refs/heads/ | head -n 100
 
     # Diff with extra info
     d = !"git diff-index --quiet HEAD -- || clear; git diff --patch-with-stat"
@@ -26,10 +42,6 @@
     my-diff = "!s() { git diff `git merge-base HEAD $1`; }; s"
     # Remote side of a diff
     his-diff = "!s() { git diff `git merge-base HEAD $1` $1; }; s"
-
-    # Interactive rebase of the last NUM commits.
-    # Ex: git reb 4
-    reb = "!r() { git rebase -i HEAD~$1; }; r"
 
     # Compress the project's working tree
     tar = !git archive --format=tar HEAD | gzip > project_`git sha --short`_`date +"%Y%m%d-%H%M"`.tar.gz
