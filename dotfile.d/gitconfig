@@ -28,6 +28,7 @@
     # Find and open file using fzf.
     # See: https://github.com/junegunn/fzf
     vim = !FILE=`git ls-files | fzf` && vim "$FILE"
+    subl = !FILE=`git ls-files | fzf` && subl "$FILE"
 
     # Bring branch up to date by fetching from remote and rebasing into it,
     # autostashing local changes
