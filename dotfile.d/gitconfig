@@ -113,3 +113,7 @@
     trustExitCode = false
     keepBackup = false
 
+# Authentication to Google Cloud Source Repositories.
+# See: https://cloud.google.com/source-repositories/docs/adding-repositories-as-remotes
+[credential "https://source.developers.google.com"]
+        helper = gcloud.sh
