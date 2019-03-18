@@ -117,3 +117,11 @@
 # See: https://cloud.google.com/source-repositories/docs/adding-repositories-as-remotes
 [credential "https://source.developers.google.com"]
         helper = gcloud.sh
+
+# Git LFS configuration, added by `git lfs install` once installed.
+# See: https://git-lfs.github.com/
+[filter "lfs"]
+        clean = git-lfs clean -- %f
+        smudge = git-lfs smudge -- %f
+        process = git-lfs filter-process
+        required = true
