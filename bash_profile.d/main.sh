@@ -16,6 +16,10 @@ alias bluesync="blueutil --connect 8c-85-90-f3-9b-b8 && blueutil --connect c0-a5
 # Install with "brew install the_silver_searcher"
 alias ag="ag --pager 'less -SR'"
 
+# List repositories dir ordered by access time,
+# select one with fzf and cd into it.
+alias c='DIR="$(ls -tu ~/code | fzf)" && cd ~/code/"$DIR"'
+
 # Environment
 # --------------------------------
 
