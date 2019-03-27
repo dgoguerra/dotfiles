@@ -1,0 +1,35 @@
+#!/bin/bash -e
+
+# Based on: https://gist.github.com/magnetikonline/dd5837d597722c9c2d5dfa16d8efe5b9
+
+# work over each commit and append all files in tree to $tempFile
+tempFile=$(mktemp)
+IFS=$'\n'
+for commitSHA1 in $(git rev-list --all); do
+    git ls-tree -r --long "$commitSHA1" >>"$tempFile"
+done
+
+# sort files by SHA1, de-dupe list and finally re-sort by filesize
+sort --key 3 "$tempFile" | uniq | \
+    sort -k4 -rn | head -n 20 | \
+    awk '
+function human(x) {
+    if (x < 1000) {
+        return x
+    } else {
+        x /= 1024
+    }
+    s="kMGTEPZY";
+    while (x >= 1000 && length(s) > 1) {
+        x /= 1024;
+        s = substr(s,2)
+    }
+    return int(x+0.5) substr(s,1,1)
+}
+{
+    $4 = human($4);
+    printf "%s %5s %s\n", $3, $4, $5
+}'
+
+# remove temp file
+rm "$tempFile"
