@@ -49,6 +49,6 @@ install_profile_loader
 # the leading dot, which is added when symlinking them to the
 # user's home.
 echo "Setting symlinks:"
-for file in "$BASEDIR"/dotfile.d/*; do
+for file in "$BASEDIR"/dotfiles/*; do
     symlink_dotfile "$file" ~/.$(basename "$file")
 done
