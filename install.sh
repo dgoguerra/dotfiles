@@ -22,7 +22,7 @@ install_profile_loader() {
     fi
 }
 
-symlink_dotfile() {
+symlink() {
     local source="$1"
     local dest="$2"
 
@@ -43,12 +43,21 @@ symlink_dotfile() {
     fi
 }
 
+# Install bash_profile scripts loader in the user's .bash_profile.
 install_profile_loader
 
-# Symlink all found dotfiles. Notice that all dotfiles are missing
+# Symlink all dotfiles. Notice that all dotfiles are missing
 # the leading dot, which is added when symlinking them to the
 # user's home.
-echo "Setting symlinks:"
+echo
+echo "Linking dotfiles:"
 for file in "$BASEDIR"/dotfiles/*; do
-    symlink_dotfile "$file" ~/.$(basename "$file")
+    symlink "$file" ~/.$(basename "$file")
+done
+
+# Symlink all binaries.
+echo
+echo "Linking binaries:"
+for file in "$BASEDIR"/bins/*; do
+    symlink "$file" /usr/local/bin/$(basename "$file")
 done
