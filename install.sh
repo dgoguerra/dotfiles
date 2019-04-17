@@ -61,3 +61,11 @@ echo "Linking binaries:"
 for file in "$BASEDIR"/bins/*; do
     symlink "$file" /usr/local/bin/$(basename "$file")
 done
+
+echo
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "Running some OSX-specific initializations. You may be asked to enter your sudo password."
+    source "$DOTFILES_DIR/scripts/osx.sh"
+else
+    echo "System is not OSX, ignoring scripts/osx.sh"
+fi
