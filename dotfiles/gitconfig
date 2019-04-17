@@ -51,8 +51,8 @@
     # Remote side of a diff
     his-diff = "!s() { git diff `git merge-base HEAD $1` $1; }; s"
 
-    # Compress the project's working tree
-    tar = !git archive --format=tar HEAD | gzip > project_`git sha --short`_`date +"%Y%m%d-%H%M"`.tar.gz
+    # Create a tarball of the project's working tree
+    tar = !git archive --format=tar HEAD | gzip > `basename $(pwd)`_`git sha --short`_`date +"%Y%m%d-%H%M"`.tar.gz
 
     # First project's empty commit
     first-commit = commit -m 'Initial empty commit' --allow-empty
