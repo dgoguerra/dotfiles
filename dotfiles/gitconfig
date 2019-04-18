@@ -18,18 +18,18 @@
     set-upstream = !git branch --set-upstream-to=origin/`git my-branch`
 
     # 'git checkout' wrapper to select branch if no args were provided.
-    c = "!s() { \"${DOTFILES_DIR}\"/scripts/git-checkout-wrapper.sh \"$@\"; }; s"
+    c = dot-checkout
 
     # 'git rebase' wrapper to select starting commit of interactive rebase
     # it none was provided.
     # Ex: git reb
     # Ex: git reb 4
-    reb = "!s() { \"${DOTFILES_DIR}\"/scripts/git-rebase-wrapper.sh \"$@\"; }; s"
+    reb = dot-rebase
 
     # Fixup/amend any given commit.
     # Ex: git fixup
     # Ex: git fixup HASH
-    fixup = "!s() { \"${DOTFILES_DIR}\"/scripts/git-fixup.sh \"$@\"; }; s"
+    fixup = dot-fixup
 
     # Find and open file using fzf.
     # See: https://github.com/junegunn/fzf
@@ -66,12 +66,11 @@
     perl = "!s() { git ls-files -z | xargs -0 perl -p -i -e \"$1\"; }; s"
 
     # Purge file from a repository's history.
-    # See: https://help.github.com/articles/removing-sensitive-data-from-a-repository/
-    purge = "!s() { git filter-branch --force --index-filter \"git rm --cached --ignore-unmatch $1\" --prune-empty --tag-name-filter cat -- --all; }; s"
+    purge = dot-purge
 
     # List big files in the repository's history.
     # See: https://gist.github.com/magnetikonline/dd5837d597722c9c2d5dfa16d8efe5b9
-    ls-big = "!s() { \"${DOTFILES_DIR}\"/scripts/git-listobjectbysize.sh \"$@\"; }; s"
+    ls-big = dot-listobjectsbysize
 
 [color]
     ui = true

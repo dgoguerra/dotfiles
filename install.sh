@@ -22,7 +22,7 @@ install_profile_loader() {
     fi
 }
 
-symlink_dotfile() {
+symlink() {
     local source="$1"
     local dest="$2"
 
@@ -43,12 +43,33 @@ symlink_dotfile() {
     fi
 }
 
+# Install bash_profile scripts loader in the user's .bash_profile.
 install_profile_loader
 
-# Symlink all found dotfiles. Notice that all dotfiles are missing
+# Symlink all dotfiles. Notice that all dotfiles are missing
 # the leading dot, which is added when symlinking them to the
 # user's home.
-echo "Setting symlinks:"
-for file in "$BASEDIR"/dotfile.d/*; do
-    symlink_dotfile "$file" ~/.$(basename "$file")
+echo
+echo "Linking dotfiles:"
+for file in "$BASEDIR"/dotfiles/*; do
+    symlink "$file" ~/.$(basename "$file")
 done
+
+# Symlink all binaries.
+echo
+echo "Linking binaries:"
+for file in "$BASEDIR"/bins/*; do
+    symlink "$file" /usr/local/bin/$(basename "$file")
+done
+
+# OSX: install brew dependencies and set custom system config.
+echo
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "Configuring OSX settings. You may be asked to enter your sudo password."
+    source "$DOTFILES_DIR/scripts/osx-config.sh"
+
+    echo "Installing OSX dependencies."
+    source "$DOTFILES_DIR/scripts/osx-deps.sh"
+else
+    echo "System is not OSX, skipping OSX specific configuration."
+fi

@@ -34,8 +34,13 @@ export ANSIBLE_NOCOWS=1
 
 # Ignore commands that start with spaces, and duplicates.
 export HISTCONTROL=ignorespace:ignoredups
+
 # When the shell exits, append to the history file instead of overwriting it
 shopt -s histappend
+
+# Increase history file size and number of commands saved
+export HISTSIZE=100000
+export HISTFILESIZE=100000
 
 # NodeJS
 # --------------------------------
