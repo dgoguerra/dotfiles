@@ -66,10 +66,16 @@ done
 echo
 if [[ "$OSTYPE" == "darwin"* ]]; then
     echo "Configuring OSX settings. You may be asked to enter your sudo password."
-    source "$DOTFILES_DIR/scripts/osx-config.sh"
+    source "$BASEDIR/scripts/osx-config.sh"
 
     echo "Installing OSX dependencies."
-    source "$DOTFILES_DIR/scripts/osx-deps.sh"
+    source "$BASEDIR/scripts/osx-deps.sh"
 else
     echo "System is not OSX, skipping OSX specific configuration."
 fi
+
+
+# Install NPM dependencies.
+echo
+echo "Installing NPM dependencies."
+source "$BASEDIR/scripts/npm-deps.sh"
