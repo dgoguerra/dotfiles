@@ -87,8 +87,14 @@ fi
 #   brew install git
 #
 
-if [ -f $(brew --prefix)/etc/profile.d/bash_completion.sh ]; then
-    source $(brew --prefix)/etc/profile.d/bash_completion.sh
+if type brew &>/dev/null; then
+    BREW_PREFIX=$(brew --prefix)
+    for COMPLETION in $BREW_PREFIX/etc/bash_completion.d/* do
+        [[ -f $COMPLETION ]] && source "$COMPLETION"
+    done
+    if [[ -f $BREW_PREFIX/etc/profile.d/bash_completion.sh ]]; then
+        source "$BREW_PREFIX/etc/profile.d/bash_completion.sh"
+    fi
 fi
 
 # Enable git prompt, enable showing unstaged (*) and staged (+) changes
