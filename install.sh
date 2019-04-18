@@ -62,10 +62,14 @@ for file in "$BASEDIR"/bins/*; do
     symlink "$file" /usr/local/bin/$(basename "$file")
 done
 
+# OSX: install brew dependencies and set custom system config.
 echo
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "Running some OSX-specific initializations. You may be asked to enter your sudo password."
-    source "$DOTFILES_DIR/scripts/osx.sh"
+    echo "Configuring OSX settings. You may be asked to enter your sudo password."
+    source "$DOTFILES_DIR/scripts/osx-config.sh"
+
+    echo "Installing OSX dependencies."
+    source "$DOTFILES_DIR/scripts/osx-deps.sh"
 else
-    echo "System is not OSX, ignoring scripts/osx.sh"
+    echo "System is not OSX, skipping OSX specific configuration."
 fi
