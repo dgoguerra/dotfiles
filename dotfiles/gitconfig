@@ -3,7 +3,7 @@
     email = dgoguerra.or@gmail.com
 
 [alias]
-    sha = rev-parse --verify HEAD
+    sha = "!s() { git rev-parse --verify ${1-HEAD}; }; s"
     root = !pwd
     repo = !git remote -v | grep '@.*fetch' | sed 's/.*:\\(.*\\).git.*/\\1/g'
     my-branch = !git symbolic-ref --short HEAD
