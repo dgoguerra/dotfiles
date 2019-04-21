@@ -72,6 +72,17 @@
     # See: https://gist.github.com/magnetikonline/dd5837d597722c9c2d5dfa16d8efe5b9
     ls-big = dot-listobjectsbysize
 
+    # Open current branch in new PR window in Github.
+    pr = dot-pr
+
+    # Open a branch, commit or file in Github.
+    # Ex: git open # opens current branch
+    # Ex: git open HEAD^
+    # Ex: git open master
+    # Ex: git open path/to/my/file.js
+    open = dot-open
+    browse = dot-open
+
 [color]
     ui = true
 

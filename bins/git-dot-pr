@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# Open current branch in new PR window in Github.
+#
+# Requires `opn-cli` to be installed:
+#
+#   npm install -g opn-cli
+#
+
+is_branch_name() {
+    git show-ref --verify "refs/heads/$1" >/dev/null 2>&1
+}
+
+# Select default destination branch; the first existing one
+# from the array will be used.
+#
+# This could be improved: detect which branch is closer to
+# the PR's HEAD and select it as the destination branch.
+defaultBaseBranches="development develop master"
+for base in $defaultBaseBranches; do
+    if is_branch_name "$base"; then
+        prDestBranch="$base"
+        break
+    fi
+done
+
+opn "https://github.com/`git repo`/compare/$prDestBranch...`git my-branch`"
