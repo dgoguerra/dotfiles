@@ -4,8 +4,14 @@
 
 [alias]
     root = !pwd
-    repo = !git remote -v | grep '@.*fetch' | sed 's/.*:\\(.*\\).git.*/\\1/g'
     my-branch = !git symbolic-ref --short HEAD
+
+    # Get remote name. If several, pick 'origin' if it exists,
+    # and any other otherwise.
+    my-remote = !git remote | grep origin || git remote | head -n 1
+
+    # Get owner/repo string
+    repo = !git remote get-url `git my-remote` | sed 's/.*:\\(.*\\).git.*/\\1/g'
 
     # Get hash of a commit.
     # Ex: git sha
@@ -19,8 +25,8 @@
     ff = merge --ff-only
     noff = merge --no-ff
     amend = commit --amend
-    pushb = !git push origin `git my-branch`
-    set-upstream = !git branch --set-upstream-to=origin/`git my-branch`
+    pushb = !git push `git my-remote` `git my-branch`
+    set-upstream = !git branch --set-upstream-to=`git my-remote`/`git my-branch`
 
     # 'git checkout' wrapper to select branch if no args were provided.
     c = dot-checkout
