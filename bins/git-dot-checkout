@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
-# Wrapper of 'git checkout'. Uses fzf to select branch
-# if no argument was provided.
+# Wrapper of 'git checkout'.
+#
+# - Uses fzf to select branch if no argument was provided.
+#
+# - Saves backup of the work tree as a stash before running
+#   `git checkout`, in case its deleting data we may want
+#   to revert.
 #
 # Requires fzf (https://github.com/junegunn/fzf) to be installed:
 #
@@ -12,5 +17,7 @@ if [[ "$#" == "0" ]]; then
     BRANCH=`git recent-branches | fzf` || exit 1
     git checkout "$BRANCH"
 else
+    git stash push --quiet -m "checkout backup (cmd: \"git c $*\"))"
+    git stash apply --quiet
     git checkout "$@"
 fi
