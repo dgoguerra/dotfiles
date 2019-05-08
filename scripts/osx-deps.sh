@@ -7,4 +7,4 @@ brew install git
 brew install bash-completion@2
 
 # Dependencies of installed binaries and aliases.
-brew install fzf blueutil the_silver_searcher
+brew install jq fzf blueutil the_silver_searcher

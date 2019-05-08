@@ -9,3 +9,7 @@ npm install -g which-cloud
 # CLI to open files and URLs, used in `git-dot-open`
 # and `git-dot-pr` to open Github in the browser.
 npm install -g opn-cli
+
+# CLI yaml parser, used in `dc` to parse the content
+# of docker-compose.yml.
+npm install -g js-yaml

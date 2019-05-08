@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+# Wrapper of `docker-compose` with some aliases to common commands.
+#
+# Requires js-yaml and jq to be installed:
+#
+#   brew install jq
+#   npm install -g js-yaml
+#
+
+# Get a value from the current dir's docker-compose.yml
+get-yaml() {
+    js-yaml ./docker-compose.yml | jq "$1" -r
+}
+
+# App and DB service names
+APP_SERVICE=app
+DB_SERVICE=mysql
+
+CMD="$1"
+ARGS="${@:2}"
+
+case "$CMD" in
+mysql)
+    DB=$(get-yaml .services.mysql.environment.MYSQL_DATABASE)
+    USER=$(get-yaml .services.mysql.environment.MYSQL_USER)
+    PASS=$(get-yaml .services.mysql.environment.MYSQL_PASSWORD)
+
+    # Open mysql in existing db container
+    docker-compose exec $DB_SERVICE mysql -u$USER -p$PASS $DB $ARGS
+    ;;
+dump)
+    DB=$(get-yaml .services.mysql.environment.MYSQL_DATABASE)
+    USER=$(get-yaml .services.mysql.environment.MYSQL_USER)
+    PASS=$(get-yaml .services.mysql.environment.MYSQL_PASSWORD)
+    FILE="${DB}_local_$(date +"%Y%m%d-%H%M").sql"
+
+    # Dump mysql database
+    docker-compose exec -T $DB_SERVICE mysqldump \
+        -u$USER -p$PASS $DB $ARGS > "$FILE"
+
+    echo "$(pwd)/$FILE"
+    ;;
+test)
+    # Run `npm run test` in existing app container
+    docker-compose exec $APP_SERVICE sh -c "npm run test $ARGS"
+    ;;
+npm)
+    # Run npm in existing app container
+    docker-compose exec $APP_SERVICE sh -c "npm $ARGS"
+    ;;
+sh)
+    # Open shell or run a command in existing app container
+    if [[ "$ARGS" == "" ]]; then
+        docker-compose exec $APP_SERVICE sh
+    else
+        docker-compose exec $APP_SERVICE sh -c "$ARGS"
+    fi
+    ;;
+*)
+    # Pass any arguments to docker-compose
+    docker-compose "$@"
+    ;;
+esac
