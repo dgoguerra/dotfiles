@@ -4,6 +4,12 @@
 
 [alias]
     root = !pwd
+    s = status
+    b = branch --verbose
+    g = log --graph --decorate
+    ff = merge --ff-only
+    noff = merge --no-ff
+    amend = commit --amend
     my-branch = !git symbolic-ref --short HEAD
 
     # Get remote name. If several, pick 'origin' if it exists,
@@ -19,28 +25,11 @@
     # Ex: git sha HEAD --short
     sha = "!s() { git rev-parse --verify ${1-HEAD} ${@:2}; }; s"
 
-    s = status
-    b = branch --verbose
-    g = log --graph --decorate
-    ff = merge --ff-only
-    noff = merge --no-ff
-    amend = commit --amend
+    # Push current branch
     pushb = !git push `git my-remote` `git my-branch`
+
+    # Configure upstream of current branch to default remote
     set-upstream = !git branch --set-upstream-to=`git my-remote`/`git my-branch`
-
-    # 'git checkout' wrapper to select branch if no args were provided.
-    c = dot-checkout
-
-    # 'git rebase' wrapper to select starting commit of interactive rebase
-    # it none was provided.
-    # Ex: git reb
-    # Ex: git reb 4
-    reb = dot-rebase
-
-    # Fixup/amend any given commit.
-    # Ex: git fixup
-    # Ex: git fixup HASH
-    fixup = dot-fixup
 
     # Find and open file using fzf.
     # See: https://github.com/junegunn/fzf
@@ -75,6 +64,20 @@
     # Run a perl replace on all the files in the index.
     # Ex: git perl 's/old/new/g'
     perl = "!s() { git ls-files -z | xargs -0 perl -p -i -e \"$1\"; }; s"
+
+    # 'git checkout' wrapper to select branch if no args were provided
+    c = dot-checkout
+
+    # 'git rebase' wrapper to select starting commit of interactive
+    # rebase if none was provided.
+    # Ex: git reb
+    # Ex: git reb 4
+    reb = dot-rebase
+
+    # Fixup/amend any given commit.
+    # Ex: git fixup
+    # Ex: git fixup HASH
+    fixup = dot-fixup
 
     # Purge file from a repository's history.
     purge = dot-purge
@@ -116,7 +119,7 @@
     verbose = true
 
 [grep]
-  linenumber = true
+    linenumber = true
 
 [diff]
     tool = p4merge
@@ -141,12 +144,12 @@
 # Authentication to Google Cloud Source Repositories.
 # See: https://cloud.google.com/source-repositories/docs/adding-repositories-as-remotes
 [credential "https://source.developers.google.com"]
-        helper = gcloud.sh
+    helper = gcloud.sh
 
 # Git LFS configuration, added by `git lfs install` once installed.
 # See: https://git-lfs.github.com/
 [filter "lfs"]
-        clean = git-lfs clean -- %f
-        smudge = git-lfs smudge -- %f
-        process = git-lfs filter-process
-        required = true
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
