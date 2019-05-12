@@ -65,15 +65,21 @@ done
 # OSX: install brew dependencies and set custom system config.
 echo
 if [[ "$OSTYPE" == "darwin"* ]]; then
+    # Install Homebrew if it doesnt exist
+    if test ! $(which brew); then
+        /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    fi
+
+    # Installing Homebrew deps (see Brewfile)
+    echo "Installing Homebrew dependencies."
+    brew tap homebrew/bundle
+    brew bundle
+
     echo "Configuring OSX settings. You may be asked to enter your sudo password."
     source "$BASEDIR/scripts/osx-config.sh"
-
-    echo "Installing OSX dependencies."
-    source "$BASEDIR/scripts/osx-deps.sh"
 else
-    echo "System is not OSX, skipping OSX specific configuration."
+    echo "System is not OSX, skipping Homebrew and OSX configuration."
 fi
-
 
 # Install NPM dependencies.
 echo
