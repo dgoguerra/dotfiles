@@ -18,8 +18,11 @@ brew 'wifi-password'
 
 # Apps
 # --------------------------------
-cask 'sequel-pro'
+# Custom Sequel Pro nightly version, until
+# new version 1.2 is released.
+cask './scripts/sequel-pro-nightly-cask.rb'
 cask 'sublime-text'
+cask 'p4v' # p4merge
 
 # Quicklook
 # --------------------------------
