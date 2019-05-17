@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 # Current file's dir
 BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
