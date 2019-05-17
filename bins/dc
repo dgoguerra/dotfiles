@@ -8,7 +8,7 @@
 #   npm install -g js-yaml
 #
 
-# Get a value from the current dir's docker-compose.yml
+# Get a value from the current dir's docker-compose.yml
 get-yaml() {
     js-yaml ./docker-compose.yml | jq "$1" -r
 }
@@ -26,8 +26,8 @@ mysql)
     USER=$(get-yaml .services.mysql.environment.MYSQL_USER)
     PASS=$(get-yaml .services.mysql.environment.MYSQL_PASSWORD)
 
-    # Open mysql in existing db container
-    docker-compose exec $DB_SERVICE mysql -u$USER -p$PASS $DB $ARGS
+    # Open mysql in existing db container
+    docker-compose exec -T $DB_SERVICE mysql -u$USER -p$PASS $DB $ARGS
     ;;
 dump)
     DB=$(get-yaml .services.mysql.environment.MYSQL_DATABASE)
@@ -35,15 +35,25 @@ dump)
     PASS=$(get-yaml .services.mysql.environment.MYSQL_PASSWORD)
     FILE="${DB}_local_$(date +"%Y%m%d-%H%M").sql"
 
-    # Dump mysql database
+    # Dump mysql database, showing progress with `pv`
     docker-compose exec -T $DB_SERVICE mysqldump \
-        -u$USER -p$PASS $DB $ARGS > "$FILE"
+        -u$USER -p$PASS $DB $ARGS | pv > "$FILE"
 
     echo "$(pwd)/$FILE"
     ;;
 test)
-    # Run `npm run test` in existing app container
-    docker-compose exec $APP_SERVICE sh -c "npm run test $ARGS"
+    # Run tests in existing app container.
+
+    # If the project has a 'composer.json' file, assume its
+    # a PHP project and the tests are run with phpunit.
+    # If not, run "npm run test".
+    if [[ -f composer.json ]]; then
+        TEST_CMD="vendor/bin/phpunit"
+    else
+        TEST_CMD="npm run test"
+    fi
+
+    docker-compose exec $APP_SERVICE sh -c "$TEST_CMD $ARGS"
     ;;
 npm)
     # Run npm in existing app container
