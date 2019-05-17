@@ -2,9 +2,9 @@
 
 # Open current branch in new PR window in Github.
 #
-# Requires `opn-cli` to be installed:
+# Requires `open-cli` to be installed:
 #
-#   npm install -g opn-cli
+#   npm install -g open-cli
 #
 
 is_branch_name() {
@@ -24,4 +24,4 @@ for base in $defaultBaseBranches; do
     fi
 done
 
-opn "https://github.com/`git repo`/compare/$prDestBranch...`git my-branch`"
+open-cli "https://github.com/`git repo`/compare/$prDestBranch...`git my-branch`"
