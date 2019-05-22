@@ -13,11 +13,17 @@
 #   brew install fzf
 #
 
+# No arguments, show available branches to checkout into
 if [[ "$#" == "0" ]]; then
     BRANCH=`git recent-branches | fzf` || exit 1
     git checkout "$BRANCH"
-else
-    git stash push --quiet -m "checkout backup (cmd: \"git c $*\"))"
-    git stash apply --quiet
-    git checkout "$@"
+    exit $?
 fi
+
+# If the work tree is dirty, first create stash as a backup
+if [[ `git diff --stat` != '' ]]; then
+    git stash push --quiet -m "checkout backup (cmd: \"git c $*\")"
+    git stash apply --quiet
+fi
+
+git checkout "$@"
