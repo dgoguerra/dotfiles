@@ -8,9 +8,18 @@
 #   npm install -g js-yaml
 #
 
-# Get a value from the current dir's docker-compose.yml
-get-yaml() {
-    js-yaml ./docker-compose.yml | jq "$1" -r
+# Get a service's env var from the docker-compose file
+get-dc-env() {
+    local service="$1"
+    local var="$2"
+    js-yaml docker-compose.yml | jq ".services.$service.environment.$var" -r
+}
+
+# Check if a JSON file contains a property
+json-file-has() {
+    local file="$1"
+    local prop="$2"
+    jq "$prop" -r "$file" -e >/dev/null 2>&1 && echo 1 || echo 0
 }
 
 # App and DB service names
@@ -22,17 +31,17 @@ ARGS="${@:2}"
 
 case "$CMD" in
 mysql)
-    DB=$(get-yaml .services.mysql.environment.MYSQL_DATABASE)
-    USER=$(get-yaml .services.mysql.environment.MYSQL_USER)
-    PASS=$(get-yaml .services.mysql.environment.MYSQL_PASSWORD)
+    DB=$(get-dc-env mysql MYSQL_DATABASE)
+    USER=$(get-dc-env mysql MYSQL_USER)
+    PASS=$(get-dc-env mysql MYSQL_PASSWORD)
 
     # Open mysql in existing db container
     docker-compose exec -T $DB_SERVICE mysql -u$USER -p$PASS $DB $ARGS
     ;;
 dump)
-    DB=$(get-yaml .services.mysql.environment.MYSQL_DATABASE)
-    USER=$(get-yaml .services.mysql.environment.MYSQL_USER)
-    PASS=$(get-yaml .services.mysql.environment.MYSQL_PASSWORD)
+    DB=$(get-dc-env mysql MYSQL_DATABASE)
+    USER=$(get-dc-env mysql MYSQL_USER)
+    PASS=$(get-dc-env mysql MYSQL_PASSWORD)
     FILE="${DB}_local_$(date +"%Y%m%d-%H%M").sql"
 
     # Dump mysql database, showing progress with `pv`
@@ -45,11 +54,20 @@ test)
     # Run tests in existing app container.
 
     # If the project has a 'composer.json' file, assume its
-    # a PHP project and the tests are run with phpunit.
-    # If not, run "npm run test".
+    # a PHP project. If not, treat it as a Node project.
     if [[ -f composer.json ]]; then
-        TEST_CMD="vendor/bin/phpunit"
+        # Check if a 'test' script is configured in composer.json
+        HAS_TEST_SCRIPT="$(json-file-has composer.json .scripts.test)"
+
+        if [[ "$HAS_TEST_SCRIPT" == "1" ]]; then
+            TEST_CMD="composer run-script test"
+        else
+            # No test script, default to running phpunit
+            TEST_CMD="vendor/bin/phpunit"
+        fi
     else
+        # Assume its a Node project, it should have a
+        # `npm run test` script.
         TEST_CMD="npm run test"
     fi
 
