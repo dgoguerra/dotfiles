@@ -38,7 +38,7 @@ mysql)
     # Open mysql in existing db container
     docker-compose exec -T $DB_SERVICE mysql -u$USER -p$PASS $DB $ARGS
     ;;
-dump)
+dump|mysqldump)
     DB=$(get-dc-env mysql MYSQL_DATABASE)
     USER=$(get-dc-env mysql MYSQL_USER)
     PASS=$(get-dc-env mysql MYSQL_PASSWORD)
@@ -73,11 +73,15 @@ test)
 
     docker-compose exec $APP_SERVICE sh -c "$TEST_CMD $ARGS"
     ;;
+a|art|artisan)
+    # Run php artisan in existing app container
+    docker-compose exec $APP_SERVICE sh -c "php artisan $ARGS"
+    ;;
 npm)
     # Run npm in existing app container
     docker-compose exec $APP_SERVICE sh -c "npm $ARGS"
     ;;
-sh)
+sh|bash)
     # Open shell or run a command in existing app container
     if [[ "$ARGS" == "" ]]; then
         docker-compose exec $APP_SERVICE sh
