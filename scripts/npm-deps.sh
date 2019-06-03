@@ -13,3 +13,6 @@ npm install -g open-cli
 # CLI yaml parser, used in `dc` to parse the content
 # of docker-compose.yml.
 npm install -g js-yaml
+
+# Debug open resources keeping a process running
+npm install -g why-is-node-running
