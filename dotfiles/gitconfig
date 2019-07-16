@@ -97,6 +97,10 @@
     open = dot-open
     browse = dot-open
 
+    # Initialize an empty repo from another one as base.
+    # Ex: git init-from git@github.com:owner/repo.git
+    init-from = dot-init-from
+
 [color]
     ui = true
 

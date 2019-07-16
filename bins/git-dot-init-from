@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# Initialize an empty repo from another one as base.
+# Used instead of `git init`.
+#
+# Ex: git init-from git@github.com:owner/repo.git
+
+baseUri="$1"
+
+if [ "$baseUri" == "" ]; then
+    echo >&2 "Error: missing baseUri to initialize from."
+    exit 1
+fi
+
+if [ -e ./.git ]; then
+    echo >&2 "Error: directory is already a git repo. This command is meant to replace 'git init'."
+    exit 1
+fi
+
+git init
+git first-commit
+
+git remote add base "$baseUri"
+git fetch --all
+git merge --squash --allow-unrelated-histories base/master
+
+git commit -m "Init from $baseUri, with:
+
+  git remote add base $baseUri
+  git fetch --all
+  git merge --squash --allow-unrelated-histories base/master
+"
