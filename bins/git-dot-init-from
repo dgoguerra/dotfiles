@@ -24,8 +24,12 @@ git remote add base "$baseUri"
 git fetch --all
 git merge --squash --allow-unrelated-histories base/master
 
-git commit -m "Init from $baseUri, with:
+git commit -m "Init from $baseUri
 
+Initialized from a base remote, with:
+
+  git init
+  git commit -m 'Initial empty commit' --allow-empty
   git remote add base $baseUri
   git fetch --all
   git merge --squash --allow-unrelated-histories base/master
