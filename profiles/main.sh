@@ -20,6 +20,13 @@ alias ag="ag --pager 'less -SR'"
 # select one with fzf and cd into it.
 alias c='DIR="$(ls -tu ~/code | fzf)" && cd ~/code/"$DIR"'
 
+# List all directories in a dir, select one with fzf
+# and cd into it.
+cdf() {
+  local DIR
+  DIR=$(find ${1:-.} -path '*/\.*' -prune -o -type d -print | fzf) && cd "$DIR"
+}
+
 # Environment
 # --------------------------------
 
