@@ -39,7 +39,7 @@
 
     # Bring branch up to date by fetching from remote and rebasing into it,
     # autostashing local changes
-    up = pull --rebase=preserve --autostash
+    up = pull --rebase=merges --autostash
 
     # List recent branches
     recent-branches = !git for-each-ref --sort=-committerdate --format='%(refname:short)' refs/heads/ | head -n 100
