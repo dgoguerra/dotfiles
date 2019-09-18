@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-GREEN='\033[0;32m'
+BOLDGREEN='\033[0;32m\033[1m'
 NOCOLOR='\033[0m'
 
-echo -e "${GREEN}docker build .${NOCOLOR}"
+echo -e "${BOLDGREEN}docker build .${NOCOLOR}"
 
 # Use tee to capture the created image ID from the build output,
 # while still showing it in stdout.
