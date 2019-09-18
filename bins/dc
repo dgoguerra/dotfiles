@@ -9,17 +9,26 @@
 #
 
 # Get a service's env var from the docker-compose file
-get-dc-env() {
+getDcEnv() {
     local service="$1"
     local var="$2"
     js-yaml docker-compose.yml | jq ".services.$service.environment.$var" -r
 }
 
 # Check if a JSON file contains a property
-json-file-has() {
+jsonFileHas() {
     local file="$1"
     local prop="$2"
     jq "$prop" -r "$file" -e >/dev/null 2>&1 && echo 1 || echo 0
+}
+
+runDc() {
+    BOLDGREEN='\033[0;32m\033[1m'
+    NOCOLOR='\033[0m'
+
+    echo -e "${BOLDGREEN}docker-compose $@${NOCOLOR}"
+
+    docker-compose $@
 }
 
 # App and DB service names
@@ -31,21 +40,21 @@ ARGS="${@:2}"
 
 case "$CMD" in
 mysql)
-    DB=$(get-dc-env mysql MYSQL_DATABASE)
-    USER=$(get-dc-env mysql MYSQL_USER)
-    PASS=$(get-dc-env mysql MYSQL_PASSWORD)
+    DB=$(getDcEnv mysql MYSQL_DATABASE)
+    USER=$(getDcEnv mysql MYSQL_USER)
+    PASS=$(getDcEnv mysql MYSQL_PASSWORD)
 
     # Open mysql in existing db container
-    docker-compose exec -T $DB_SERVICE mysql -u$USER -p$PASS $DB $ARGS
+    runDc exec -T $DB_SERVICE mysql -u$USER -p$PASS $DB $ARGS
     ;;
 dump|mysqldump)
-    DB=$(get-dc-env mysql MYSQL_DATABASE)
-    USER=$(get-dc-env mysql MYSQL_USER)
-    PASS=$(get-dc-env mysql MYSQL_PASSWORD)
+    DB=$(getDcEnv mysql MYSQL_DATABASE)
+    USER=$(getDcEnv mysql MYSQL_USER)
+    PASS=$(getDcEnv mysql MYSQL_PASSWORD)
     FILE="${DB}_local_$(date +"%Y%m%d-%H%M").sql"
 
     # Dump mysql database, showing progress with `pv`
-    docker-compose exec -T $DB_SERVICE mysqldump \
+    runDc exec -T $DB_SERVICE mysqldump \
         -u$USER -p$PASS $DB $ARGS | pv > "$FILE"
 
     echo "$(pwd)/$FILE"
@@ -57,7 +66,7 @@ test)
     # a PHP project. If not, treat it as a Node project.
     if [[ -f composer.json ]]; then
         # Check if a 'test' script is configured in composer.json
-        HAS_TEST_SCRIPT="$(json-file-has composer.json .scripts.test)"
+        HAS_TEST_SCRIPT="$(jsonFileHas composer.json .scripts.test)"
 
         if [[ "$HAS_TEST_SCRIPT" == "1" ]]; then
             TEST_CMD="composer run-script test"
@@ -71,26 +80,26 @@ test)
         TEST_CMD="npm run test"
     fi
 
-    docker-compose exec $APP_SERVICE sh -c "$TEST_CMD $ARGS"
+    runDc exec $APP_SERVICE sh -c "$TEST_CMD $ARGS"
     ;;
 a|art|artisan)
     # Run php artisan in existing app container
-    docker-compose exec $APP_SERVICE sh -c "php artisan $ARGS"
+    runDc exec $APP_SERVICE sh -c "php artisan $ARGS"
     ;;
 npm)
     # Run npm in existing app container
-    docker-compose exec $APP_SERVICE sh -c "npm $ARGS"
+    runDc exec $APP_SERVICE sh -c "npm $ARGS"
     ;;
 sh|bash)
     # Open shell or run a command in existing app container
     if [[ "$ARGS" == "" ]]; then
-        docker-compose exec $APP_SERVICE sh
+        runDc exec $APP_SERVICE sh
     else
-        docker-compose exec $APP_SERVICE sh -c "$ARGS"
+        runDc exec $APP_SERVICE sh -c "$ARGS"
     fi
     ;;
 *)
     # Pass any arguments to docker-compose
-    docker-compose "$@"
+    runDc "$@"
     ;;
 esac
