@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+GREEN='\033[0;32m'
+NOCOLOR='\033[0m'
+
+echo -e "${GREEN}docker build .${NOCOLOR}"
+
+# Use tee to capture the created image ID from the build output,
+# while still showing it in stdout.
+IMAGE_ID=$(docker build . | tee /dev/fd/2 | grep "Successfully built " | cut -d ' ' -f 3)
+
+echo -e "${GREEN}docker run --rm -it $@ $IMAGE_ID${NOCOLOR}"
+
+docker run --rm -it $@ $IMAGE_ID
