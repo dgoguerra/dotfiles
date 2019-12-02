@@ -33,6 +33,9 @@ cdf() {
 # Add composer global binaries to the PATH.
 export PATH="$PATH:$HOME/.composer/vendor/bin"
 
+# Add Python binaries to the PATH.
+export PATH="$PATH:$HOME/Library/Python/3.7/bin"
+
 # Disable Ansible cowsay easter egg. See: https://github.com/ansible/ansible/issues/10530
 export ANSIBLE_NOCOWS=1
 
@@ -70,13 +73,13 @@ fi
 # See: https://cloud.google.com/sdk/docs/downloads-interactive
 
 # Update PATH
-if [ -f "$HOME/Documents/google-cloud-sdk/path.bash.inc" ]; then
-    source "$HOME/Documents/google-cloud-sdk/path.bash.inc"
+if [ -f "$HOME/google-cloud-sdk/path.bash.inc" ]; then
+    source "$HOME/google-cloud-sdk/path.bash.inc"
 fi
 
 # Enable shell command completion for gcloud.
-if [ -f "$HOME/Documents/google-cloud-sdk/completion.bash.inc" ]; then
-    source "$HOME/Documents/google-cloud-sdk/completion.bash.inc"
+if [ -f "$HOME/google-cloud-sdk/completion.bash.inc" ]; then
+    source "$HOME/google-cloud-sdk/completion.bash.inc"
 fi
 
 # Homebrew
