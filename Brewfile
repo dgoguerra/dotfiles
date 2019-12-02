@@ -1,6 +1,6 @@
 # Taps
 # --------------------------------
-tap 'caskroom/cask'
+#tap 'homebrew/cask-cask'
 tap 'homebrew/bundle'
 
 # Binaries
@@ -18,6 +18,7 @@ brew 'mas' # Mac App Store CLI
 brew 'node'
 brew 'nvm'
 brew 'php@7.1'
+brew 'awscli'
 brew 'pv' # Pipe Viewer (https://www.ivarch.com/programs/pv.shtml)
 brew 'the_silver_searcher'
 brew 'wifi-password'
@@ -40,5 +41,5 @@ cask 'quicklook-json'
 
 # Mac App Store
 # --------------------------------
-mas 'The Unarchiver', id: 425424353
+#mas 'The Unarchiver', id: 425424353
 #mas 'Xcode', id: 497799835
