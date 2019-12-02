@@ -22,8 +22,8 @@ fi
 
 # If the work tree is dirty, first create stash as a backup
 if [[ `git diff --stat` != '' ]]; then
-    git stash push --quiet -m "checkout backup (cmd: \"git c $*\")"
-    git stash apply --quiet
+    git stash push -m "checkout backup (cmd: \"git c $*\")"
+    git stash apply > /dev/null
 fi
 
 git checkout "$@"
