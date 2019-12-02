@@ -56,8 +56,10 @@
 
     # First project's empty commit
     first-commit = commit -m 'Initial empty commit' --allow-empty
+    # Create a WIP commit
+    wip = "!s() { git commit -m \"WIP -- ${*:-Temporary commit} \"; }; s"
     # Undo the previous local commit, keeping changes in the index
-    undo-commit = reset --soft HEAD^
+    undo = reset --soft HEAD^
     # Show commits in one branch but not in the other
     my-commits = "!s() { git log --left-right --graph --cherry-pick --oneline $1...$2; }; s"
 
@@ -124,6 +126,9 @@
 
 [grep]
     linenumber = true
+
+[fetch]
+    prune = true
 
 [diff]
     tool = p4merge
