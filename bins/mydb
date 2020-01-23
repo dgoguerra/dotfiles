@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+dockerInlineBuild() {
+    # Use tee to capture the created image ID from the build output,
+    # while still showing it in stdout.
+    imageId=$(echo "$1" | docker build - \
+        | tee /dev/fd/2 \
+        | grep "Successfully built " | cut -d ' ' -f 3
+    )
+
+    echo "$imageId"
+}
+
+dumpFile="$1"
+
+mysqldOpts="
+    --default-authentication-plugin=mysql_native_password
+    --character-set-server=utf8mb4
+    --collation-server=utf8mb4_unicode_ci
+    --max_allowed_packet=256MB
+"
+
+csvkitDockerfile="
+FROM alpine
+RUN apk add --no-cache python3 && pip3 install csvkit mysql-connector
+"
+
+# Launch empty database
+docker run --rm -d \
+    -p 33060:3306 \
+    -e MYSQL_DATABASE=temp_db \
+    -e MYSQL_USER=app \
+    -e MYSQL_PASSWORD=secret \
+    -e MYSQL_ROOT_PASSWORD=secret \
+    --name temp-mysqld \
+    mysql $mysqldOpts
+
+mysqlHost=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' temp-mysqld)
+mysqlCmd="mysql -h$mysqlHost -uapp -psecret temp_db"
+
+# Wait for the database to be available
+docker run --rm -it jwilder/dockerize -wait "tcp://$mysqlHost:3306" -timeout 60s
+
+# If a .sql argument was provided, import it to the database
+if [[ "$dumpFile" == *.sql ]]; then
+    docker run --rm -i mysql $mysqlCmd < "$dumpFile"
+fi
+
+# If a .csv argument was provided, import it to the database
+if [[ "$dumpFile" == *.csv ]]; then
+    # TODO: have csvkit with mysql-connector available as a published image
+    imageId=$(dockerInlineBuild "$csvkitDockerfile")
+    docker run --rm -i "$imageId" csvsql \
+        --db "mysql+mysqlconnector://app:secret@$mysqlHost:3306/temp_db" \
+        --tables csv \
+        --insert < "$dumpFile"
+fi
+
+# Open mysql CLI
+docker run --rm -it mysql $mysqlCmd
+
+# On exit cleanup created database
+docker kill temp-mysqld

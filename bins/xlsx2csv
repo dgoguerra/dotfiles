@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+inputFileName="$1"
+shift
+outputFileName="$1"
+shift
+args="$@"
+
+dockerInlineBuild() {
+    # Use tee to capture the created image ID from the build output,
+    # while still showing it in stdout.
+    imageId=$(echo "$1" | docker build - \
+        | tee /dev/fd/2 \
+        | grep "Successfully built " | cut -d ' ' -f 3
+    )
+
+    echo "$imageId"
+}
+
+dockerfile="
+FROM ubuntu
+RUN set -x && apt-get update \
+	&& apt-get install -y python3-pip \
+	&& pip3 install xlsx2csv
+"
+
+imageId=$(dockerInlineBuild "$dockerfile")
+
+docker run --rm -i \
+	-v $(pwd):/workdir \
+	"$imageId" xlsx2csv $args "/workdir/$inputFileName" "/workdir/$outputFileName"
