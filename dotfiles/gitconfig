@@ -41,9 +41,6 @@
     # autostashing local changes
     up = pull --rebase=merges --autostash
 
-    # List recent branches
-    recent-branches = !git for-each-ref --sort=-committerdate --format='%(refname:short)' refs/heads/ | head -n 100
-
     # Diff with extra info
     d = !"git diff-index --quiet HEAD -- || clear; git diff --patch-with-stat"
     # Local side of a diff
