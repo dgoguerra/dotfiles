@@ -107,8 +107,11 @@ npm)
 sh|bash)
     # Open shell or run a command in existing app container
 
-    # No args or starting with '-c ', pass them through exec
-    if [[ "$ARGS" == "" || "$ARGS" =~ "^-c .*" ]]; then
+    # No args, start available shell
+    if [[ "$ARGS" == "" ]]; then
+        runDc exec $APP_SERVICE /bin/sh -c "[[ -e /bin/bash ]] && /bin/bash || /bin/sh"
+    # Args starting with '-c ', pass them through exec
+    elif [[ "$ARGS" =~ "^-c .*" ]]; then
         runDc exec $APP_SERVICE $CMD $ARGS
     else
         runDc exec $APP_SERVICE $CMD -c "$ARGS"
