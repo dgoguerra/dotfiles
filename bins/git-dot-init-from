@@ -4,8 +4,11 @@
 # Used instead of `git init`.
 #
 # Ex: git init-from git@github.com:owner/repo.git
+# Ex: git init-from git@github.com:owner/repo.git develop
+# Ex: git init-from git@github.com:owner/repo.git 6b1f9a0d
 
 baseUri="$1"
+baseBranch="${2:-master}"
 
 if [ "$baseUri" == "" ]; then
     echo >&2 "Error: missing baseUri to initialize from."
@@ -22,7 +25,7 @@ git first-commit
 
 git remote add base "$baseUri"
 git fetch --all
-git merge --squash --allow-unrelated-histories base/master
+git merge --squash --allow-unrelated-histories base/$baseBranch
 
 git commit -m "Init from $baseUri
 
@@ -32,5 +35,5 @@ Initialized from a base remote, with:
   git commit -m 'Initial empty commit' --allow-empty
   git remote add base $baseUri
   git fetch --all
-  git merge --squash --allow-unrelated-histories base/master
+  git merge --squash --allow-unrelated-histories base/$baseBranch
 "
