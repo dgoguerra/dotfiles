@@ -52,9 +52,9 @@
     tar = !git archive --format=tar HEAD | gzip > `basename $(pwd)`_`git sha HEAD --short`_`date +"%Y%m%d-%H%M"`.tar.gz
 
     # First project's empty commit
-    first-commit = commit -m 'Initial empty commit' --allow-empty
+    first-commit = commit -m 'chore: initial empty commit' --allow-empty
     # Create a WIP commit
-    wip = "!s() { git commit -m \"WIP -- ${*:-Temporary commit} \"; }; s"
+    wip = "!s() { git commit -m \"wip: ${*:-temporary commit} \"; }; s"
     # Undo the previous local commit, keeping changes in the index
     undo = reset --soft HEAD^
     # Show commits in one branch but not in the other
