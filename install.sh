@@ -8,8 +8,9 @@ BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 install_profile_loader() {
     local profile="$HOME/.bash_profile"
 
-    if [ -z "$profile" ]; then
+    if [ ! -f "$profile" ]; then
         echo >&2 "Error: '$profile' not found, loader will not be installed."
+        exit 1
     fi
 
     if grep -qc 'dgoguerra/dotfiles' "$profile"; then
@@ -40,7 +41,7 @@ symlink() {
     elif [ -f "$dest" ]; then
         echo >&2 "Error: '$dest' already exists, remove it first to symlink."
     else
-        ln -s "$source" "$dest"
+        sudo ln -s "$source" "$dest"
         echo "$dest => $source"
     fi
 }
