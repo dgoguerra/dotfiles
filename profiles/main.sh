@@ -113,4 +113,4 @@ fi
 # next to the branch name.
 # See: https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
 GIT_PS1_SHOWDIRTYSTATE=true
-PS1='[\u@mbp \w$(__git_ps1)]\$ '
+PS1='[\u@\h \w$(__git_ps1)]\$ '
