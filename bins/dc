@@ -107,15 +107,13 @@ npm)
 sh|bash)
     # Open shell or run a command in existing app container
 
-    # No args, start available shell
+    # No args, open shell. Use bash if available, and sh instead
     if [[ "$ARGS" == "" ]]; then
-        runDc exec $APP_SERVICE /bin/sh -c "[[ -e /bin/bash ]] && /bin/bash || /bin/sh"
-    # Args starting with '-c ', pass them through exec
-    elif [[ "$ARGS" =~ "^-c .*" ]]; then
-        runDc exec $APP_SERVICE $CMD $ARGS
-    else
-        runDc exec $APP_SERVICE $CMD -c "$ARGS"
+        CMD=/bin/sh
+        ARGS="[ -e /bin/bash ] && /bin/bash || /bin/sh"
     fi
+
+    runDc exec $APP_SERVICE $CMD -c "$ARGS"
     ;;
 *)
     # Pass any arguments to docker-compose
