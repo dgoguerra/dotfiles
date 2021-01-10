@@ -1,5 +1,6 @@
 #!/bin/bash -e
 
+# List big files in the repository's history.
 # Based on: https://gist.github.com/magnetikonline/dd5837d597722c9c2d5dfa16d8efe5b9
 
 # work over each commit and append all files in tree to $tempFile

@@ -6,6 +6,13 @@
 #
 #   npm install -g open-cli
 #
+# Examples:
+#
+#   git open # opens current branch
+#   git open HEAD^
+#   git open master
+#   git open path/to/my/file.js
+#
 
 is_branch_name() {
     git show-ref --verify "refs/heads/$1" >/dev/null 2>&1

@@ -64,42 +64,6 @@
     # Ex: git perl 's/old/new/g'
     perl = "!s() { git ls-files -z | xargs -0 perl -p -i -e \"$1\"; }; s"
 
-    # 'git checkout' wrapper to select branch if no args were provided
-    c = dot-checkout
-
-    # 'git rebase' wrapper to select starting commit of interactive
-    # rebase if none was provided.
-    # Ex: git reb
-    # Ex: git reb 4
-    reb = dot-rebase
-
-    # Fixup/amend any given commit.
-    # Ex: git fixup
-    # Ex: git fixup HASH
-    fixup = dot-fixup
-
-    # Purge file from a repository's history.
-    purge = dot-purge
-
-    # List big files in the repository's history.
-    # See: https://gist.github.com/magnetikonline/dd5837d597722c9c2d5dfa16d8efe5b9
-    ls-big = dot-listobjectsbysize
-
-    # Open current branch in new PR window in Github.
-    pr = dot-pr
-
-    # Open a branch, commit or file in Github.
-    # Ex: git open # opens current branch
-    # Ex: git open HEAD^
-    # Ex: git open master
-    # Ex: git open path/to/my/file.js
-    open = dot-open
-    browse = dot-open
-
-    # Initialize an empty repo from another one as base.
-    # Ex: git init-from git@github.com:owner/repo.git
-    init-from = dot-init-from
-
 [color]
     ui = true
 

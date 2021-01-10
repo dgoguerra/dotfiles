@@ -14,6 +14,11 @@
 #
 #   brew install fzf
 #
+# Examples:
+#
+#   git reb
+#   git reb 4
+#
 
 if [[ "$#" == "0" ]]; then
     # No arguments, select starting commit with fzf
