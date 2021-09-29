@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+# Wrapper of `docker` with some aliases to common commands.
+#
+# Requires fzf to be installed:
+#
+#   brew install fzf
+#
+
+set -euo pipefail
+
+CMD="$1"
+ARGS="${@:2}"
+
+case "$CMD" in
+c|ctx|context)
+    ctx=$(kubectl config current-context)
+    newCtx=$(kubectl config get-contexts -o name \
+        | awk -v curr=$ctx '{ print $1 ($1 == curr ? " (current)" : "") }' \
+        | fzf \
+        | awk '{ print $1 }')
+
+    kubectl config use-context $newCtx
+    ;;
+
+ns|namespace)
+    ctx=$(kubectl config current-context)
+    ns=$(kubectl config view \
+      -o jsonpath='{.contexts[?(@.name=="'$ctx'")].context.namespace}')
+
+    newNs=$(kubectl get namespaces -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' \
+        | awk -v curr=${ns:-default} '{ print $1 ($1 == curr ? " (current)" : "") }' \
+        | fzf \
+        | awk '{ print $1 }')
+
+    kubectl config set-context --current --namespace=$newNs
+    ;;
+
+*)
+    # Passthrough to kubectl
+    kubectl "$@"
+    ;;
+esac

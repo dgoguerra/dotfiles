@@ -27,8 +27,6 @@ cdf() {
   DIR=$(find ${1:-.} -path '*/\.*' -prune -o -type d -print | fzf) && cd "$DIR"
 }
 
-alias k=kubectl
-
 # Environment
 # --------------------------------
 
