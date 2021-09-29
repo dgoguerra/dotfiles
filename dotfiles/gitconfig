@@ -39,10 +39,10 @@
 
     # Bring branch up to date by fetching from remote and rebasing into it,
     # autostashing local changes
-    up = pull --rebase=merges --autostash
+    up = "!s() { git pull --rebase=merges --autostash ; git branch --v | grep '\\[gone\\]' | awk '{print $1}' | xargs -r git branch -D; }; s"
 
     # Diff with extra info
-    d = !"git diff-index --quiet HEAD -- || clear; git diff --patch-with-stat"
+    d = "!git diff-index --quiet HEAD -- || clear; git diff --patch-with-stat"
     # Local side of a diff
     my-diff = "!s() { git diff `git merge-base HEAD $1`; }; s"
     # Remote side of a diff
