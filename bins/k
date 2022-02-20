@@ -15,23 +15,35 @@ ARGS="${@:2}"
 case "$CMD" in
 c|ctx|context)
     ctx=$(kubectl config current-context)
-    newCtx=$(kubectl config get-contexts -o name \
-        | awk -v curr=$ctx '{ print $1 ($1 == curr ? " (current)" : "") }' \
-        | fzf \
-        | awk '{ print $1 }')
+    newCtx="${2:-}"
+
+    if [ "$newCtx" == "" ]; then
+        newCtx=$(kubectl config get-contexts -o name \
+          | awk -v curr=$ctx '{ print $1 ($1 == curr ? " (current)" : "") }' \
+          | fzf \
+          | awk '{ print $1 }')
+    fi
 
     kubectl config use-context $newCtx
     ;;
 
 ns|namespace)
     ctx=$(kubectl config current-context)
+    ns="${2:-}"
+
+    if [ "$ns" == "" ]; then
     ns=$(kubectl config view \
       -o jsonpath='{.contexts[?(@.name=="'$ctx'")].context.namespace}')
+    fi
 
-    newNs=$(kubectl get namespaces -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' \
-        | awk -v curr=${ns:-default} '{ print $1 ($1 == curr ? " (current)" : "") }' \
-        | fzf \
-        | awk '{ print $1 }')
+    newNs="${2:-}"
+
+    if [ "$newNs" == "" ]; then
+        newNs=$(kubectl get namespaces -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' \
+          | awk -v curr=${ns:-default} '{ print $1 ($1 == curr ? " (current)" : "") }' \
+          | fzf \
+          | awk '{ print $1 }')
+    fi
 
     kubectl config set-context --current --namespace=$newNs
     ;;
