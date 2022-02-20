@@ -14,27 +14,26 @@
 #
 
 getRefs() {
-    git for-each-ref --sort=-committerdate --format='%(refname:short)' "$1"
+    git for-each-ref --sort=-committerdate --format='%(refname:short)' $@
 }
 
-getRemoteRefs() {
+getRemoteBranches() {
     getRefs "refs/remotes/$1/" | grep -v HEAD | cut -d/ -f2-
 }
 
 # List branches both locally and in every remote. Only show
 # a remote branch if it doesnt exist locally.
 listBranches() {
-    localBranches=$(getRefs refs/heads/)
+    localBranchesAndTags=$(getRefs refs/heads/ refs/tags/)
 
-    echo "$localBranches"
+    echo "$localBranchesAndTags"
 
     for remote in $(git remote); do
-        remoteBranches=$(getRemoteRefs "$remote")
+        remoteBranches=$(getRemoteBranches "$remote")
 
-        # List branches in the remote, and only print the ones
-        # which do not exist locally. Append name of the remote
-        # to them.
-        diff <(echo "$localBranches") <(echo "$remoteBranches") \
+        # List branches in the remote, and only print the ones which do not
+        # exist locally. Append name of the remote to them.
+        diff <(echo "$localBranchesAndTags") <(echo "$remoteBranches") \
             | grep '>' | cut -c 3- \
             | xargs -I % echo % "($remote)"
     done
@@ -48,8 +47,7 @@ if [[ "$#" == "0" ]]; then
     # Extract remote from the "branch (remote)" line, if any
     remote=$(echo "$line" | sed -n 's/^.* (\(.*\))$/\1/p')
 
-    # If the branch didnt exist checkout into it tracking
-    # the remote branch.
+    # If the branch didnt exist, checkout into it tracking the remote branch
     if [[ "$remote" != "" ]]; then
         exec git checkout --track "$remote/$branch"
     fi
