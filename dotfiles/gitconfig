@@ -37,10 +37,6 @@
     subl = !FILE=`git ls-files | fzf` && subl "$FILE"
     open = !FILE=`git ls-files | fzf` && open "$FILE"
 
-    # Bring branch up to date by fetching from remote and rebasing into it,
-    # autostashing local changes
-    up = "!s() { git pull --rebase=merges --autostash ; git branch --v | grep '\\[gone\\]' | awk '{print $1}' | xargs -r git branch -D; }; s"
-
     # Diff with extra info
     d = "!git diff-index --quiet HEAD -- || clear; git diff --patch-with-stat"
     # Local side of a diff

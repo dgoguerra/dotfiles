@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Bring branch up to date by fetching from remote and rebasing into it,
+# autostashing local changes.
+#
+# Also cleans up older branches already deleted from the remote.
+
+git pull --rebase=merges --autostash
+
+git branch --format='%(refname:short) %(objectname:short) %(upstream:track)' \
+    | grep '\\[gone\\]' \
+    | awk '{print $1}' \
+    | xargs -r git branch -D
