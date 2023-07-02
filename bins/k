@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Wrapper of `docker` with some aliases to common commands.
+# Wrapper of `kubectl` with some aliases to common commands.
 #
 # Requires fzf to be installed:
 #
@@ -8,6 +8,19 @@
 #
 
 set -euo pipefail
+
+if [ "${1:-}" == "" ]; then
+  echo "k [command...]"
+  echo
+  echo "Wrapper of kubectl with extra aliases"
+  echo
+  echo "Commands:"
+  echo "  k context [name]    Switch to the given kubectl context"
+  echo "  k namespace [name]  Switch to the given kubectl namespace"
+  echo "  k [command...]      Wildcard command to fallback to kubectl [default]"
+
+  exit 1
+fi
 
 CMD="$1"
 ARGS="${@:2}"
