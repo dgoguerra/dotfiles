@@ -16,7 +16,7 @@ is_branch_name() {
 #
 # This could be improved: detect which branch is closer to
 # the PR's HEAD and select it as the destination branch.
-defaultBaseBranches="development develop master"
+defaultBaseBranches="development develop release-next master"
 for base in $defaultBaseBranches; do
     if is_branch_name "$base"; then
         prDestBranch="$base"
@@ -24,4 +24,19 @@ for base in $defaultBaseBranches; do
     fi
 done
 
-open-cli "https://github.com/`git repo`/compare/$prDestBranch...`git my-branch`"
+repo="$(git repo)"
+branch="$(git my-branch)"
+remote="$(git my-remote)"
+remoteUrl="$(git remote get-url $remote)"
+
+if [[ "$remoteUrl" =~ "github.com" ]]; then
+    open-cli "https://github.com/$repo/compare/$prDestBranch...$branch"
+elif [[ "$remoteUrl" =~ "gitlab" ]]; then
+    serverUrl=${remoteUrl#*@}
+    serverUrl=${serverUrl%:*}
+    serverUrl=${serverUrl%/*}
+    open-cli "https://$serverUrl/$repo/-/merge_requests/new?merge_request%5Bsource_branch%5D=$branch"
+else
+    echo "Unexpected uri '$remoteUrl' for remote '$remote'"
+    exit 1
+fi

@@ -6,11 +6,11 @@ set -e
 BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 install_profile_loader() {
-    # Load dotfiles through .bash_profile in OSX, .profile in Linux
+    # Load dotfiles through .bash_profile in OSX, .bashrc in Linux
     if [[ "$OSTYPE" == "darwin"* ]]; then
         local profile="$HOME/.bash_profile"
     elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-        local profile="$HOME/.profile"
+        local profile="$HOME/.bashrc"
     else
         echo >&2 "Error: unsupported platform '$OSTYPE', loader will not be installed."
         exit 1

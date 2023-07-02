@@ -26,4 +26,14 @@ git commit --fixup="$HASH" --allow-empty
 
 # Run autosquash rebase.
 # GIT_SEQUENCE_EDITOR=: avoids opening the rebase sequence.
-GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash --autostash "$HASH"~1;
+
+# TODO: cambiar --preserve-merges por --rebase-merges. Creo que no es un cambio
+# automático, me ha dado error al hacer un fixup.
+#
+# Ver:
+# https://stackoverflow.com/questions/7279196/git-how-to-edit-reword-a-merge-commits-message
+# https://www.infoq.com/news/2019/07/git-2-22-rebase-merges/
+
+# TODO: meter --preserve-merges también en alias git amend.
+
+GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash --autostash --preserve-merges "$HASH"~1;
