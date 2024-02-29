@@ -50,7 +50,7 @@
     # First project's empty commit
     first-commit = commit -m 'chore: initial empty commit' --allow-empty
     # Create a WIP commit
-    wip = "!s() { git commit -m \"wip: ${*:-temporary commit} \"; }; s"
+    wip = "!s() { git commit --no-verify -m \"wip: ${*:-temporary commit} \"; }; s"
     # Undo the previous local commit, keeping changes in the index
     undo = reset --soft HEAD^
     # Show commits in one branch but not in the other
@@ -88,34 +88,9 @@
     prune = true
 
 [diff]
-    tool = p4merge
-
     # Git diff will use (i)ndex, (w)ork tree, (c)ommit and (o)bject
     # instead of a/b/c/d as prefixes for patches
     mnemonicprefix = true
 
 [merge]
     keepBackup = false
-    tool = p4merge
-
-[difftool "p4merge"]
-    cmd = /Applications/p4merge.app/Contents/Resources/launchp4merge "\"$REMOTE\"" "\"$LOCAL\""
-
-[mergetool "p4merge"]
-    cmd = /Applications/p4merge.app/Contents/Resources/launchp4merge "\"$PWD/$BASE\"" "\"$PWD/$REMOTE\"" "\"$PWD/$LOCAL\"" "\"$PWD/$MERGED\""
-    keepTemporaries = false
-    trustExitCode = false
-    keepBackup = false
-
-# Authentication to Google Cloud Source Repositories.
-# See: https://cloud.google.com/source-repositories/docs/adding-repositories-as-remotes
-[credential "https://source.developers.google.com"]
-    helper = gcloud.sh
-
-# Git LFS configuration, added by `git lfs install` once installed.
-# See: https://git-lfs.github.com/
-[filter "lfs"]
-    clean = git-lfs clean -- %f
-    smudge = git-lfs smudge -- %f
-    process = git-lfs filter-process
-    required = true

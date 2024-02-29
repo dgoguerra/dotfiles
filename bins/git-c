@@ -34,8 +34,7 @@ listBranches() {
         # List branches in the remote, and only print the ones which do not
         # exist locally. Append name of the remote to them.
         diff <(echo "$localBranchesAndTags") <(echo "$remoteBranches") \
-            | grep '>' | cut -c 3- \
-            | xargs -I % echo % "($remote)"
+            | grep '>' | cut -c 3- | awk -v remote=$remote '{ print $1 " (" remote ")" }'
     done
 }
 

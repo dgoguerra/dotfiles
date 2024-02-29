@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# List ECR images with tags in a given registry and repository.
+
+region=us-east-1
+
+aws ecr describe-repositories \
+  --registry-id "$1" --region "$region" --page-size 999 \
+  | jq -r '.repositories | sort_by(.repositoryUri) | .[].repositoryUri'
